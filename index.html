@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💻 パソコン業界クイズ道場</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://pecpec37-gift.github.io/portal/stamp.js"></script>
+<style>
+:root{
+  --bg:#06090f;--bg2:#0c1119;--surface:#121925;--surface2:#1a2434;
+  --border:rgba(103,232,249,0.14);
+  --navy:#0c4a6e;--blue:#0284c7;--blue2:#06b6d4;--blue3:#67e8f9;
+  --slate:#475569;--slate2:#64748b;
+  --amber:#d97706;--amber2:#f59e0b;--amber3:#fde68a;
+  --green:#10b981;--red:#ef4444;
+  --text:#e8f3f8;--text2:rgba(232,243,248,0.7);--text3:rgba(232,243,248,0.38);
+  --radius:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 10% 10%,rgba(6,182,212,0.1) 0%,transparent 50%),radial-gradient(ellipse at 90% 90%,rgba(245,158,11,0.06) 0%,transparent 50%);pointer-events:none;z-index:0;}
+.screen{display:none;position:relative;z-index:1;}.screen.active{display:block;}
+#screen-top{min-height:100vh;}
+.top-hero{background:linear-gradient(160deg,#0b1726 0%,#06090f 55%,#04060a 100%);padding:52px 24px 44px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.top-hero::before{content:'💻';position:absolute;right:-10px;bottom:-20px;font-size:200px;opacity:0.05;pointer-events:none;}
+.top-hero::after{content:'🖥️';position:absolute;left:10px;top:10px;font-size:120px;opacity:0.04;pointer-events:none;}
+.top-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.22em;color:var(--blue3);text-transform:uppercase;margin-bottom:12px;}
+.top-title{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:clamp(30px,7vw,56px);line-height:1.1;color:var(--text);margin-bottom:8px;}
+.top-title span{color:var(--blue3);}
+.top-sub{font-size:13px;color:var(--text2);letter-spacing:0.06em;margin-bottom:28px;}
+.top-rule{display:inline-block;background:rgba(6,182,212,0.07);border:1px solid rgba(6,182,212,0.22);border-radius:6px;padding:14px 20px;text-align:left;font-size:12px;line-height:2;color:var(--text2);}
+.top-rule strong{color:var(--blue3);}
+.genres-wrap{max-width:920px;margin:0 auto;padding:32px 20px 20px;}
+.genres-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.genres-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.genres-hint{font-size:12px;color:var(--blue3);background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);border-radius:4px;padding:8px 14px;margin-bottom:20px;text-align:center;letter-spacing:0.04em;}
+.genres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:24px;}
+.genre-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 18px;cursor:pointer;transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;position:relative;overflow:hidden;}
+.genre-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,182,212,0.07),transparent);opacity:0;transition:opacity 0.15s;}
+.genre-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5);border-color:rgba(6,182,212,0.5);}
+.genre-card:hover::before{opacity:1;}
+.genre-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:6px 6px 0 0;}
+.genre-icon{font-size:30px;line-height:1;margin-bottom:8px;display:block;}
+.genre-name{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:16px;margin-bottom:4px;color:var(--text);}
+.genre-desc{font-size:11px;color:var(--text3);margin-bottom:4px;line-height:1.6;}
+.genre-count{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;}
+.genre-start{position:absolute;top:14px;right:14px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--blue2);opacity:0;transition:opacity 0.15s;}
+.genre-card:hover .genre-start{opacity:1;}
+.ranking-btn-wrap{text-align:center;padding:8px 0 36px;}
+.ranking-btn{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.12em;padding:10px 24px;background:none;border:1px solid var(--border);color:var(--text3);border-radius:3px;cursor:pointer;transition:all 0.15s;}
+.ranking-btn:hover{border-color:var(--blue3);color:var(--blue3);}
+#screen-intro{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;}
+#screen-intro.active{display:flex;}
+.intro-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 28px;width:100%;max-width:420px;text-align:center;}
+.intro-icon{font-size:52px;margin-bottom:10px;display:block;}
+.intro-name{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:24px;margin-bottom:4px;color:var(--blue3);}
+.intro-desc{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.7;}
+.intro-rule{font-size:12px;line-height:1.9;color:var(--text2);text-align:left;background:rgba(6,182,212,0.07);border-radius:6px;padding:12px 14px;margin-bottom:20px;}
+.intro-rule strong{color:var(--blue3);}
+.name-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.18em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;text-align:left;}
+.name-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;margin-bottom:16px;outline:none;transition:border-color 0.15s;}
+.name-input:focus{border-color:var(--blue2);}
+.name-input::placeholder{color:var(--text3);}
+.start-btn{width:100%;padding:14px;background:var(--blue);color:#fff;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:16px;border:none;border-radius:6px;cursor:pointer;transition:background 0.15s,transform 0.1s;letter-spacing:0.04em;}
+.start-btn:hover{background:var(--blue2);}
+.start-btn:active{transform:scale(0.98);}
+.back-link{margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);cursor:pointer;transition:color 0.15s;background:none;border:none;}
+.back-link:hover{color:var(--text);}
+#screen-quiz{min-height:100vh;}
+.quiz-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:10;}
+.quiz-progress{flex:1;height:3px;background:rgba(6,182,212,0.15);border-radius:2px;overflow:hidden;min-width:60px;}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue2),var(--amber2));border-radius:2px;transition:width 0.3s;}
+.quiz-qnum{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);white-space:nowrap;letter-spacing:0.08em;}
+.quiz-score{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--amber3);white-space:nowrap;}
+.quiz-timer-wrap{display:flex;align-items:center;gap:5px;}
+.quiz-timer{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:22px;color:var(--amber3);min-width:40px;text-align:right;transition:color 0.3s;}
+.quiz-timer.danger{color:#ef4444;animation:pulse 0.5s infinite alternate;}
+@keyframes pulse{from{opacity:1;}to{opacity:0.5;}}
+.quiz-timer-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:0.1em;}
+.quiz-body{max-width:640px;margin:0 auto;padding:28px 20px 40px;}
+.quiz-type-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.16em;padding:3px 10px;border-radius:3px;display:inline-block;margin-bottom:14px;text-transform:uppercase;}
+.quiz-type-badge.type-4{background:rgba(6,182,212,0.15);color:var(--blue2);}
+.quiz-type-badge.type-ox{background:rgba(16,185,129,0.12);color:#34d399;}
+.quiz-q{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:clamp(15px,3.5vw,19px);line-height:1.7;margin-bottom:22px;color:var(--text);}
+.choices{display:flex;flex-direction:column;gap:10px;}
+.choice-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;text-align:left;font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--text);cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:10px;width:100%;}
+.choice-btn:hover:not(:disabled){background:var(--surface2);border-color:rgba(6,182,212,0.5);transform:translateX(3px);}
+.choice-btn:disabled{cursor:default;}
+.choice-btn.correct{background:rgba(16,185,129,0.12);border-color:#10b981;color:#34d399;}
+.choice-btn.wrong{background:rgba(239,68,68,0.1);border-color:#ef4444;color:#f87171;}
+.choice-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);min-width:18px;flex-shrink:0;}
+.ox-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ox-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 16px;font-size:36px;cursor:pointer;transition:all 0.12s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
+.ox-btn span{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;}
+.ox-btn:hover:not(:disabled){transform:scale(1.03);border-color:rgba(6,182,212,0.5);}
+.ox-btn:disabled{cursor:default;}
+.ox-btn.correct{background:rgba(16,185,129,0.12);border-color:#10b981;}
+.ox-btn.wrong{background:rgba(239,68,68,0.1);border-color:#ef4444;}
+.feedback-bar{margin-top:14px;padding:12px 16px;border-radius:6px;font-size:13px;font-weight:700;opacity:0;transition:opacity 0.2s;min-height:44px;}
+.feedback-bar.show{opacity:1;}
+.feedback-bar.ok{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.28);}
+.feedback-bar.ng{background:rgba(239,68,68,0.08);color:#f87171;border:1px solid rgba(239,68,68,0.22);}
+.next-btn{margin-top:14px;width:100%;padding:12px;background:var(--blue);color:#fff;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:15px;border:none;border-radius:6px;cursor:pointer;transition:background 0.15s;display:none;}
+.next-btn.show{display:block;}
+.next-btn:hover{background:var(--blue2);}
+#screen-result{min-height:100vh;display:none;flex-direction:column;align-items:center;padding:40px 20px 60px;}
+#screen-result.active{display:flex;}
+.result-box{width:100%;max-width:520px;}
+.result-genre{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase;margin-bottom:8px;text-align:center;}
+.result-score-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px;text-align:center;margin-bottom:20px;}
+.result-medal{font-size:48px;margin-bottom:8px;display:block;}
+.result-score{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:64px;line-height:1;color:var(--amber3);}
+.result-score-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.16em;color:var(--text3);margin-bottom:16px;text-transform:uppercase;}
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
+.result-stat{background:var(--bg2);border-radius:6px;padding:12px 8px;text-align:center;}
+.result-stat-val{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:24px;color:var(--blue3);}
+.result-stat-val.green{color:#34d399;}
+.result-stat-val.gold{color:var(--amber3);}
+.result-stat-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--text3);margin-top:2px;}
+.result-actions{display:flex;gap:10px;margin-bottom:24px;}
+.result-btn{flex:1;padding:12px;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:14px;border-radius:6px;cursor:pointer;transition:all 0.15s;}
+.result-btn-primary{background:var(--blue);color:#fff;border:none;}
+.result-btn-primary:hover{background:var(--blue2);}
+.result-btn-secondary{background:none;color:var(--text2);border:1px solid var(--border);}
+.result-btn-secondary:hover{border-color:var(--blue2);color:var(--blue2);}
+.wrong-section{width:100%;max-width:520px;}
+.wrong-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.18em;color:var(--text3);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.wrong-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px;}
+.wrong-item-num{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--text3);margin-bottom:6px;}
+.wrong-item-q{font-size:14px;line-height:1.6;color:var(--text);margin-bottom:10px;font-weight:700;}
+.wrong-item-ans{display:flex;align-items:flex-start;gap:8px;font-size:13px;}
+.wrong-item-ans-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);background:rgba(16,185,129,0.1);padding:2px 7px;border-radius:2px;white-space:nowrap;margin-top:1px;}
+.wrong-item-ans-text{color:#34d399;line-height:1.5;}
+.portal-back{display:block;text-align:center;margin-top:28px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:0.1em;color:var(--text3);text-decoration:none;padding:10px 20px;border:1px solid var(--border);border-radius:3px;transition:all 0.15s;}
+.portal-back:hover{border-color:var(--blue2);color:var(--blue2);}
+#screen-ranking{min-height:100vh;padding:40px 20px 60px;}
+.ranking-wrap{max-width:600px;margin:0 auto;}
+.ranking-top{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.ranking-title{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:22px;color:var(--amber3);flex:1;}
+.ranking-back{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:3px;padding:6px 14px;cursor:pointer;transition:all 0.15s;}
+.ranking-back:hover{border-color:var(--amber3);color:var(--amber3);}
+.ranking-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-bottom:20px;border-bottom:1px solid var(--border);}
+.ranking-tabs::-webkit-scrollbar{display:none;}
+.ranking-tab{flex-shrink:0;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.1em;padding:10px 12px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.ranking-tab.active{color:var(--amber3);border-bottom-color:var(--amber3);}
+.ranking-list{display:flex;flex-direction:column;gap:6px;}
+.ranking-empty{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);text-align:center;padding:32px;letter-spacing:0.1em;}
+.ranking-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 16px;}
+.ranking-row.top1{border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.05);}
+.ranking-row.top2{border-color:rgba(200,200,200,0.25);}
+.ranking-row.top3{border-color:rgba(180,100,30,0.3);}
+.ranking-pos{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:18px;min-width:28px;color:var(--text3);}
+.ranking-pos.gold{color:#f59e0b;}.ranking-pos.silver{color:#9ca3af;}.ranking-pos.bronze{color:#b45309;}
+.ranking-name{flex:1;font-size:14px;font-weight:700;color:var(--text);}
+.ranking-score{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:20px;color:var(--amber3);}
+.ranking-date{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-left:6px;}
+.ranking-del{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 8px;margin-top:12px;font-family:'Share Tech Mono',monospace;letter-spacing:0.08em;transition:color 0.15s;}
+.ranking-del:hover{color:#ef4444;}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg2);color:var(--amber3);font-family:'Share Tech Mono',monospace;font-size:12px;padding:10px 20px;border-radius:6px;border:1px solid var(--amber2);z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.portal-fixed-btn{position:fixed;bottom:20px;left:20px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(6,9,15,0.92);color:var(--blue3);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:0.08em;border-radius:4px;border:1px solid rgba(6,182,212,0.35);text-decoration:none;backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,0.5);transition:all 0.15s;white-space:nowrap;}
+.portal-fixed-btn:hover{background:rgba(6,9,15,0.98);border-color:rgba(6,182,212,0.7);transform:translateY(-1px);}
+@media(max-width:480px){.genres-grid{grid-template-columns:1fr 1fr;}.result-actions{flex-direction:column;}.portal-fixed-btn{bottom:14px;left:14px;padding:8px 14px;font-size:11px;}.quiz-body{padding:22px 16px 36px;}.ox-btn{padding:22px 12px;font-size:30px;}}
+@media(max-width:360px){.genres-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="screen-top" class="screen active">
+  <div class="top-hero">
+    <div class="top-eyebrow">Tommy's Quiz Dojo // PC INDUSTRY</div>
+    <h1 class="top-title">パソコン<span>業界</span>クイズ道場</h1>
+    <p class="top-sub">PCの歴史・CPU・OS・パーツ・メーカー・最新技術まで、パソコン業界を遊んで学ぼう！</p>
+    <div class="top-rule">⚡ 制限時間：<strong>120秒</strong> ／ 各ジャンル<strong>10問</strong>ランダム出題<br>✅ 正解 → <strong>+10点</strong> ＋ 時間+5秒<br>❌ 不正解 → 減点なし ＋ 時間−5秒のペナルティ<br>🏆 残り時間がそのままボーナス点に加算！<br>【4択】と【○×】がランダムにミックスされます</div>
+  </div>
+  <div class="genres-wrap">
+    <div class="genres-label">// ジャンルを選んで即スタート</div>
+    <div class="genres-hint">👆 カードをクリックするとすぐに始まります（次の画面はスタート前の最終確認です）</div>
+    <div class="genres-grid" id="genres-grid"></div>
+    <div class="ranking-btn-wrap"><button class="ranking-btn" onclick="showRanking()">🏆 スコアランキングを見る</button></div>
+  </div>
+</div>
+<div id="screen-intro" class="screen">
+  <div class="intro-box">
+    <span class="intro-icon" id="intro-icon"></span>
+    <div class="intro-name" id="intro-name"></div>
+    <div class="intro-desc" id="intro-desc"></div>
+    <div class="intro-rule">制限時間：<strong>120秒</strong> ／ 10問ランダム出題（4択＋○×ミックス）<br>✅ 正解 → <strong>+10点</strong> ＋ 時間+5秒<br>❌ 不正解 → 減点なし ＋ 時間−5秒<br>🏆 残り時間がそのままボーナス点に加算</div>
+    <div class="name-label">// Your Name（ランキングに表示）</div>
+    <input class="name-input" id="name-input" type="text" maxlength="20" placeholder="プレーヤー名（任意）">
+    <button class="start-btn" onclick="startGame()">スタート ▶</button>
+    <button class="back-link" onclick="showScreen('screen-top')">← 戻る</button>
+  </div>
+</div>
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-qnum" id="quiz-qnum">Q1 / 10</div>
+    <div class="quiz-progress"><div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div></div>
+    <div class="quiz-score" id="quiz-score">0 pt</div>
+    <div class="quiz-timer-wrap"><div class="quiz-timer" id="quiz-timer">120</div><div class="quiz-timer-label">秒</div></div>
+  </div>
+  <div class="quiz-body">
+    <div class="quiz-type-badge" id="quiz-type-badge">4択</div>
+    <div class="quiz-q" id="quiz-q"></div>
+    <div id="quiz-choices"></div>
+    <div class="feedback-bar" id="feedback-bar"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の問題へ →</button>
+  </div>
+</div>
+<div id="screen-result" class="screen">
+  <div class="result-box">
+    <div class="result-genre" id="result-genre"></div>
+    <div class="result-score-wrap">
+      <span class="result-medal" id="result-medal">🏆</span>
+      <div class="result-score" id="result-score">0</div>
+      <div class="result-score-label">TOTAL SCORE</div>
+      <div class="result-stats">
+        <div class="result-stat"><div class="result-stat-val green" id="result-correct">0</div><div class="result-stat-label">正解数</div></div>
+        <div class="result-stat"><div class="result-stat-val" id="result-wrong">0</div><div class="result-stat-label">不正解数</div></div>
+        <div class="result-stat"><div class="result-stat-val gold" id="result-bonus">+0</div><div class="result-stat-label">時間ボーナス</div></div>
+      </div>
+    </div>
+    <div class="result-actions">
+      <button class="result-btn result-btn-primary" onclick="retryGame()">もう一度挑戦</button>
+      <button class="result-btn result-btn-secondary" onclick="showScreen('screen-top')">← トップへ</button>
+    </div>
+  </div>
+  <div class="wrong-section" id="wrong-section"></div>
+  <a class="portal-back" href="https://pecpec37-gift.github.io/portal/">← とみやんのゲームランド</a>
+</div>
+<div id="screen-ranking" class="screen">
+  <div class="ranking-wrap">
+    <div class="ranking-top"><div class="ranking-title">🏆 スコアランキング</div><button class="ranking-back" onclick="showScreen('screen-top')">← トップへ</button></div>
+    <div class="ranking-tabs" id="ranking-tabs"></div>
+    <div class="ranking-list" id="ranking-list"></div>
+    <div style="text-align:center;margin-top:16px;"><button class="ranking-del" onclick="deleteRanking()">🗑️ このジャンルの記録を削除</button></div>
+  </div>
+</div>
+<div id="toast"></div>
+<a class="portal-fixed-btn" href="https://pecpec37-gift.github.io/portal/">← とみやんのゲームランド</a>
+<script>
+const GENRES=[
+  {id:'history',  icon:'📜', name:'PCの歴史・あゆみ',   color:'#06b6d4', desc:'ENIAC・Windows・Mac・国産PCの歩み'},
+  {id:'cpu',      icon:'🔲', name:'CPU・半導体',          color:'#3b82f6', desc:'Intel・AMD・ARM・ムーアの法則・nm'},
+  {id:'os',       icon:'💿', name:'OS・ソフトウェア',     color:'#8b5cf6', desc:'Windows・macOS・Linux・Office・ブラウザ'},
+  {id:'hardware', icon:'🔧', name:'ハードウェア・パーツ', color:'#10b981', desc:'メモリ・SSD・GPU・USB・端子・周辺機器'},
+  {id:'maker',    icon:'🏢', name:'メーカー・ブランド',   color:'#f59e0b', desc:'Apple・富士通・NEC・Lenovo・Dell'},
+  {id:'trend',    icon:'🚀', name:'最新技術・トレンド',   color:'#ec4899', desc:'AI・生成AI・クラウド・IoT・DX・5G'},
+];
+const DB={
+history:[
+  {type:'4',q:'世界初の本格的な汎用電子計算機としてよく知られるのはどれか？',c:['UNIVAC','ENIAC','Macintosh','Windows'],a:1},
+  {type:'ox',q:'Apple社は1976年にスティーブ・ジョブズやスティーブ・ウォズニアックらによって創業された。',a:true},
+  {type:'4',q:'1981年に登場した「IBM PC」と呼ばれる初代パソコンの型番はどれか？',c:['IBM 5150','IBM 360','IBM PS/2','IBM ThinkPad'],a:0},
+  {type:'ox',q:'Microsoft社はビル・ゲイツとポール・アレンによって設立された。',a:true},
+  {type:'4',q:'家庭にも広く普及したWindowsの代表的バージョン「Windows 95」が発売された年はどれか？',c:['1990年','1993年','1995年','1998年'],a:2},
+  {type:'ox',q:'Apple社の「Macintosh」は1984年に発売された。',a:true},
+  {type:'4',q:'初代Macintoshが広く普及させた、アイコンやマウスで操作する画面方式を何と呼ぶか？',c:['CUI','GUI','BIOS','API'],a:1},
+  {type:'ox',q:'「MS-DOS」は文字を打ち込んで操作するCUI（文字ベース）のOSだった。',a:true},
+  {type:'4',q:'コンピュータ操作用の「マウス」を発明したとされる人物はどれか？',c:['ビル・ゲイツ','ダグラス・エンゲルバート','スティーブ・ジョブズ','アラン・チューリング'],a:1},
+  {type:'ox',q:'1990年代のPCでは、記憶媒体として「フロッピーディスク」が広く使われていた。',a:true},
+  {type:'4',q:'日本で「PC-9801」シリーズを発売し、国内市場を席巻したメーカーはどれか？',c:['NEC','富士通','シャープ','東芝'],a:0},
+  {type:'ox',q:'ノートPCブランド「ThinkPad」は、もともとIBMが開発したものである。',a:true},
+  {type:'4',q:'World Wide Web（WWW）を考案したとされる人物はどれか？',c:['ティム・バーナーズ＝リー','リーナス・トーバルズ','ラリー・ペイジ','ゴードン・ムーア'],a:0},
+  {type:'ox',q:'「Windows XP」は2001年に発売された。',a:true},
+  {type:'4',q:'OSとして「Linux」の開発を1991年に始めた人物はどれか？',c:['リーナス・トーバルズ','ビル・ゲイツ','スティーブ・ジョブズ','マーク・ザッカーバーグ'],a:0},
+  {type:'ox',q:'検索エンジンの「Google」は1998年に創業された。',a:true},
+  {type:'4',q:'1990年代後半に普及した、周辺機器の接続を大きく簡単にした規格はどれか？',c:['USB','HDMI','Wi-Fi','Bluetooth'],a:0},
+  {type:'ox',q:'「Windows Vista」はWindows XPの後継として発売された。',a:true},
+  {type:'4',q:'タブレット型端末として大ヒットしたApple「初代iPad」が発売された年はどれか？',c:['2007年','2010年','2013年','2016年'],a:1},
+  {type:'ox',q:'「CD-ROM」は音楽用CDの技術を応用した、データを記録できる媒体である。',a:true},
+  {type:'4',q:'1990年代後半に普及した、電話回線を使う低速なインターネット接続方式を何と呼ぶか？',c:['ダイヤルアップ接続','光回線','5G','衛星通信'],a:0},
+  {type:'ox',q:'「DVD」はCDよりも大容量のデータを記録できる光ディスクである。',a:true},
+  {type:'4',q:'半導体・IT企業が集まるアメリカ・カリフォルニア州の地域を何と呼ぶか？',c:['ウォール街','シリコンバレー','ハリウッド','シリコンアイランド'],a:1},
+  {type:'ox',q:'「HDD（ハードディスク）」は磁気を利用してデータを記録する装置である。',a:true},
+  {type:'4',q:'「PC-8801」「PC-9801」などの国産パソコンが活躍したのは主にどの時代か？',c:['1960〜70年代','1980〜90年代','2000〜10年代','2010〜20年代'],a:1},
+  {type:'ox',q:'「Windows 11」はWindows 10の後継として発売された。',a:true},
+  {type:'4',q:'初期の携帯可能なパソコン「ラップトップ」が登場し始めたのはおおよそいつ頃か？',c:['1950年代','1960年代','1980年代','2010年代'],a:2},
+  {type:'ox',q:'かつてIBMのPC事業（ThinkPadを含む）は、中国のLenovoに売却された。',a:true},
+],
+cpu:[
+  {type:'4',q:'「CPU」は何の略か？',c:['Central Processing Unit','Computer Power Unit','Core Program Utility','Central Program Unit'],a:0},
+  {type:'ox',q:'CPUはコンピュータの「頭脳」にあたる中心的な演算処理装置である。',a:true},
+  {type:'4',q:'Intel社の代表的なCPUブランドはどれか？',c:['Core','Ryzen','Snapdragon','Exynos'],a:0},
+  {type:'ox',q:'「AMD」はIntelと競合する大手CPUメーカーである。',a:true},
+  {type:'4',q:'AMD社のCPUブランド名はどれか？',c:['Core','Ryzen','Pentium','Atom'],a:1},
+  {type:'ox',q:'「半導体」は、電気を通す導体と通さない絶縁体の中間的な性質を持つ。',a:true},
+  {type:'4',q:'半導体の主要な材料として最も広く使われている元素はどれか？',c:['鉄','銅','シリコン（ケイ素）','金'],a:2},
+  {type:'ox',q:'「ムーアの法則」は、半導体の集積度がおよそ1.5〜2年で倍増するという経験則だ。',a:true},
+  {type:'4',q:'「ムーアの法則」を提唱した、Intel共同創業者でもある人物はどれか？',c:['ゴードン・ムーア','ビル・ゲイツ','スティーブ・ジョブズ','ジェフ・ベゾス'],a:0},
+  {type:'ox',q:'CPUの「コア数」が多いほど、複数の処理を同時にこなしやすい傾向がある。',a:true},
+  {type:'4',q:'CPUの処理速度の目安となる「動作周波数（クロック）」の単位はどれか？',c:['GB','GHz','dpi','Mbps'],a:1},
+  {type:'ox',q:'「GPU」は主に画像・映像の処理を得意とする演算装置である。',a:true},
+  {type:'4',q:'スマートフォン向けCPUで主流の、省電力なアーキテクチャはどれか？',c:['x86','ARM','VGA','SATA'],a:1},
+  {type:'ox',q:'「nm（ナノメートル）」は、半導体の製造プロセスの微細さを表す単位として使われる。',a:true},
+  {type:'4',q:'半導体の受託製造（ファウンドリ）で世界最大級として知られる台湾の企業はどれか？',c:['TSMC','Adobe','Oracle','Cisco'],a:0},
+  {type:'ox',q:'「64ビットCPU」は、32ビットCPUより一度に扱えるデータ量が大きい。',a:true},
+  {type:'4',q:'Apple社が自社開発し、近年のMacに搭載しているCPUのシリーズはどれか？',c:['Aシリーズ','Mシリーズ','Xシリーズ','Zシリーズ'],a:1},
+  {type:'ox',q:'半導体チップは「ウェハー」と呼ばれる円板状の基板から多数切り出して作られる。',a:true},
+  {type:'4',q:'Coreより前の世代に主力だった、Intelの有名なCPUブランドはどれか？',c:['Pentium','Ryzen','Tegra','Cortex'],a:0},
+  {type:'ox',q:'「キャッシュメモリ」は、CPU内部にある高速な記憶領域である。',a:true},
+  {type:'4',q:'GPU（グラフィックス処理装置）の分野で世界的に有名なメーカーはどれか？',c:['NVIDIA','SAP','Yahoo','楽天'],a:0},
+  {type:'ox',q:'「オーバークロック」とは、CPUを定格以上の周波数で動作させることである。',a:true},
+  {type:'4',q:'CPUの「TDP」が主に表すものはどれか？',c:['通信速度','熱設計電力（発熱の目安）','記憶容量','画面解像度'],a:1},
+  {type:'ox',q:'「マルチコアCPU」とは、1つのCPUに複数の演算コアを搭載したものである。',a:true},
+  {type:'4',q:'近年、誰でも自由に使えるオープンな命令セットとして注目されているのはどれか？',c:['RISC-V','COBOL','JPEG','HTML'],a:0},
+  {type:'ox',q:'かつて日本企業も、DRAMなど半導体で世界的に高いシェアを持っていた時期がある。',a:true},
+  {type:'4',q:'スマートフォン向けのチップ（SoC）で広く知られるアメリカの企業はどれか？',c:['Qualcomm','Adobe','Netflix','Twitter'],a:0},
+  {type:'ox',q:'半導体製造では、回路パターンを焼き付ける「露光（リソグラフィ）」という工程がある。',a:true},
+],
+os:[
+  {type:'4',q:'「OS」は何の略か？',c:['Operating System','Open Software','Online Service','Output System'],a:0},
+  {type:'ox',q:'「Windows」はMicrosoft社が開発するOSである。',a:true},
+  {type:'4',q:'Apple社のパソコン「Mac」に搭載されているOSはどれか？',c:['Windows','macOS','Android','Chrome OS'],a:1},
+  {type:'ox',q:'「Linux」はオープンソースで、誰でも自由に利用・改変できるOSである。',a:true},
+  {type:'4',q:'スマートフォン向けOSで、Googleが開発したものはどれか？',c:['iOS','Android','Symbian','BlackBerry OS'],a:1},
+  {type:'ox',q:'「iOS」はApple社のiPhone向けOSである。',a:true},
+  {type:'4',q:'文書作成ソフトとして広く使われる、Microsoft Officeの製品はどれか？',c:['Excel','Word','PowerPoint','Outlook'],a:1},
+  {type:'ox',q:'「Excel」は表計算ソフトである。',a:true},
+  {type:'4',q:'プレゼン資料の作成に使われる、Microsoft Officeのソフトはどれか？',c:['Word','PowerPoint','Access','OneNote'],a:1},
+  {type:'ox',q:'「ブラウザ」とは、Webサイトを閲覧するためのソフトである。',a:true},
+  {type:'4',q:'Googleが開発したWebブラウザはどれか？',c:['Edge','Safari','Chrome','Firefox'],a:2},
+  {type:'ox',q:'「Safari」はApple社のWebブラウザである。',a:true},
+  {type:'4',q:'複数のファイルを1つにまとめて小さくする、一般的な圧縮形式はどれか？',c:['ZIP','CPU','RAM','USB'],a:0},
+  {type:'ox',q:'「PDF」は、環境によらず同じレイアウトで文書を表示できる形式である。',a:true},
+  {type:'4',q:'ソフトの不具合を修正するために配布される、小さな修正プログラムを何と呼ぶか？',c:['パッチ','カーネル','シェル','クッキー'],a:0},
+  {type:'ox',q:'「ドライバ」は、周辺機器をOSが正しく扱えるようにするためのソフトである。',a:true},
+  {type:'4',q:'OSの中核となり、ハードウェアとソフトを橋渡しする部分を何と呼ぶか？',c:['カーネル','アイコン','フォルダ','タスクバー'],a:0},
+  {type:'ox',q:'「オープンソースソフトウェア」とは、ソースコードが公開されているソフトのことだ。',a:true},
+  {type:'4',q:'Webページの構造や見出しなどを記述する、基本的な言語はどれか？',c:['HTML','MP3','RGB','PDF'],a:0},
+  {type:'ox',q:'「ウイルス対策ソフト」は、マルウェアの検出・駆除を行うソフトである。',a:true},
+  {type:'4',q:'複数のアプリを切り替えながら同時に動かせる仕組みを何と呼ぶか？',c:['マルチタスク','シングルコア','スクリーンショット','ショートカット'],a:0},
+  {type:'ox',q:'「アップデート」とは、ソフトを新しいバージョンに更新することを指す。',a:true},
+  {type:'4',q:'ソフトを買い切りでなく、月額・年額などで継続利用する方式を何と呼ぶか？',c:['サブスクリプション','インストール','アンインストール','ダウンロード'],a:0},
+  {type:'ox',q:'「クラウドストレージ」とは、インターネット上にファイルを保存するサービスである。',a:true},
+  {type:'4',q:'無料で使えるオフィス互換ソフトとして知られるのはどれか？',c:['LibreOffice','Photoshop','AutoCAD','Premiere'],a:0},
+  {type:'ox',q:'「バックアップ」とは、データの予備の複製を別の場所に保存しておくことである。',a:true},
+  {type:'4',q:'Windowsでファイルやフォルダを画面上で操作する、標準のファイル管理機能はどれか？',c:['エクスプローラー','ターミナル','レジストリ','BIOS'],a:0},
+  {type:'ox',q:'「ショートカットキー」を使うと、操作を素早く行えることがある。',a:true},
+],
+hardware:[
+  {type:'4',q:'「RAM（メインメモリ）」の主な役割はどれか？',c:['作業中のデータを一時的に保持する','データを永久に保存する','映像を画面に出力する','電力を供給する'],a:0},
+  {type:'ox',q:'RAM上のデータは、電源を切ると基本的に消える（揮発性）。',a:true},
+  {type:'4',q:'近年HDDに代わって普及している、高速で衝撃に強い記憶装置はどれか？',c:['SSD','GPU','CPU','RAM'],a:0},
+  {type:'ox',q:'「SSD」はHDDに比べて、一般に高速で衝撃に強い。',a:true},
+  {type:'4',q:'「HDD」は何の略か？',c:['Hard Disk Drive','High Data Disk','Hyper Drive Disk','Hard Display Device'],a:0},
+  {type:'ox',q:'PCの各パーツを取り付ける土台となる基板を「マザーボード」と呼ぶ。',a:true},
+  {type:'4',q:'映像をディスプレイに出力する処理を主に担うパーツはどれか？',c:['グラフィックボード（GPU）','電源ユニット','HDD','光学ドライブ'],a:0},
+  {type:'ox',q:'「電源ユニット（PSU）」は、コンセントの電力をPC内部で使える形に変換する。',a:true},
+  {type:'4',q:'キーボードやマウスなどを接続するのに使われる、一般的な汎用端子はどれか？',c:['USB','HDMI','LAN','SATA'],a:0},
+  {type:'ox',q:'「HDMI」は、映像と音声を1本のケーブルで伝送できる端子である。',a:true},
+  {type:'4',q:'有線でインターネットに接続するときに使う端子はどれか？',c:['LAN（Ethernet）','HDMI','VGA','USB'],a:0},
+  {type:'ox',q:'「Wi-Fi」は、無線でネットワークに接続するための技術である。',a:true},
+  {type:'4',q:'CPUの発熱を抑えるために取り付けるパーツはどれか？',c:['CPUクーラー（ヒートシンク・ファン）','GPU','SSD','電源ユニット'],a:0},
+  {type:'ox',q:'ディスプレイの解像度が高いほど、よりきめ細かい表示ができる。',a:true},
+  {type:'4',q:'1024MB（メガバイト）は、およそ何GB（ギガバイト）か？',c:['0.1GB','1GB','10GB','100GB'],a:1},
+  {type:'ox',q:'「USBメモリ」は、手軽に持ち運べる外部記憶媒体である。',a:true},
+  {type:'4',q:'ノートPCで内蔵されることが多い、指でカーソルを動かす装置はどれか？',c:['タッチパッド','マザーボード','GPU','光学ドライブ'],a:0},
+  {type:'ox',q:'「Bluetooth」は近距離の無線通信規格で、ワイヤレスマウスやイヤホンに使われる。',a:true},
+  {type:'4',q:'近年主流になりつつある、上下の区別がない小型のUSB端子はどれか？',c:['USB Type-C','RS-232C','PS/2','VGA'],a:0},
+  {type:'ox',q:'メモリ（RAM）を増設すると、より多くの処理を同時に快適に行いやすくなる。',a:true},
+  {type:'4',q:'ディスプレイの映像を構成する、色のついた最小の点を何と呼ぶか？',c:['ピクセル（画素）','バイト','ヘルツ','ボルト'],a:0},
+  {type:'ox',q:'「冷却ファン」は、PC内部にこもった熱を外へ逃がすために使われる。',a:true},
+  {type:'4',q:'SSDやHDDをマザーボードに接続する、一般的なインターフェースはどれか？',c:['SATA','HDMI','VGA','USB'],a:0},
+  {type:'ox',q:'「BIOS（UEFI）」は、PC起動時にハードウェアを初期化する基本的なプログラムである。',a:true},
+  {type:'4',q:'画像や印刷の細かさを表す「dpi」が示すものはどれか？',c:['解像度（1インチあたりの点の数）','通信速度','記憶容量','電圧'],a:0},
+  {type:'ox',q:'「外付けHDD」は、USBなどでPCにつなぐ拡張用の記憶装置である。',a:true},
+  {type:'4',q:'ゲーミングPCで特に重視されることが多いパーツはどれか？',c:['高性能なGPU','光学ドライブ','大型スピーカーのみ','フロッピードライブ'],a:0},
+  {type:'ox',q:'ノートPCは内蔵バッテリーにより、電源につながずに一定時間動作できる。',a:true},
+],
+maker:[
+  {type:'4',q:'「Windows」を開発・販売している企業はどれか？',c:['Microsoft','Apple','Google','Amazon'],a:0},
+  {type:'ox',q:'「Mac」や「iPhone」を開発・販売しているのはApple社である。',a:true},
+  {type:'4',q:'ノートPC「ThinkPad」ブランドを擁する、中国発祥の世界的PCメーカーはどれか？',c:['Lenovo','Dell','HP','Acer'],a:0},
+  {type:'ox',q:'「Dell」はアメリカの大手PCメーカーである。',a:true},
+  {type:'4',q:'パソコンブランド「LIFEBOOK」「FMV」を展開してきた日本のメーカーはどれか？',c:['富士通','ソニー','シャープ','パナソニック'],a:0},
+  {type:'ox',q:'「dynabook」は、もともと東芝が生み出したノートPCブランドである。',a:true},
+  {type:'4',q:'ノートPC「VAIO」は、もともとどの企業のブランドだったか？',c:['ソニー','NEC','日立','三菱'],a:0},
+  {type:'ox',q:'「NEC」はかつて「PC-9801」で日本のPC市場を席巻した。',a:true},
+  {type:'4',q:'頑丈なビジネス向けノートPC「レッツノート（Let’s note）」を展開する日本メーカーはどれか？',c:['パナソニック','富士通','シャープ','京セラ'],a:0},
+  {type:'ox',q:'「Acer」や「ASUS」は台湾発祥のPC関連メーカーである。',a:true},
+  {type:'4',q:'PCやプリンタで知られ、しばしば「HP」と略されるアメリカ企業はどれか？',c:['ヒューレット・パッカード','ホンダ・パワー','ハイテク・プロダクツ','ハーバード・プレス'],a:0},
+  {type:'ox',q:'「Microsoft」は、ビル・ゲイツが共同で創業した企業である。',a:true},
+  {type:'4',q:'CPUメーカーとして世界的に知られるアメリカ企業はどれか？',c:['Intel','Adobe','Cisco','Oracle'],a:0},
+  {type:'ox',q:'「Adobe」は、PhotoshopやPDFで知られるソフトウェア企業である。',a:true},
+  {type:'4',q:'半導体やスマートフォンでも世界的な存在感を持つ、韓国の総合電機メーカーはどれか？',c:['Samsung','Lenovo','Sony','Acer'],a:0},
+  {type:'ox',q:'GPU大手「NVIDIA」の主力製品は、グラフィックス処理装置（GPU）である。',a:true},
+  {type:'4',q:'検索エンジンで世界最大手であり、Androidも開発している企業はどれか？',c:['Google','Yahoo','Baidu','Mozilla'],a:0},
+  {type:'ox',q:'「Amazon」は、クラウドサービス（AWS）でも世界的な大手である。',a:true},
+  {type:'4',q:'Apple社を1976年に共同で創業した人物の一人は誰か？',c:['スティーブ・ジョブズ','ビル・ゲイツ','イーロン・マスク','ジェフ・ベゾス'],a:0},
+  {type:'ox',q:'「Sony」は、日本を代表する電機・エンタテインメント企業である。',a:true},
+  {type:'4',q:'WindowsやOfficeを擁するMicrosoft社の本社があるアメリカの州はどれか？',c:['ワシントン州','カリフォルニア州','テキサス州','ニューヨーク州'],a:0},
+  {type:'ox',q:'「TSMC」は、半導体の受託製造で知られる台湾の企業である。',a:true},
+  {type:'4',q:'動画共有サービス「YouTube」を所有している企業はどれか？',c:['Google','Apple','Netflix','Microsoft'],a:0},
+  {type:'ox',q:'かつて世界的な大企業だった「IBM」は、現在もコンピュータ関連事業を続けている。',a:true},
+  {type:'4',q:'SNS「Facebook」を運営し、社名を「Meta」へ変更した企業の創業者は誰か？',c:['マーク・ザッカーバーグ','ラリー・ペイジ','ジャック・ドーシー','スティーブ・ジョブズ'],a:0},
+  {type:'ox',q:'「Microsoft 365（旧Office 365）」を提供しているのはMicrosoftである。',a:true},
+  {type:'4',q:'スマートフォン向けチップ「Snapdragon」で知られるアメリカ企業はどれか？',c:['Qualcomm','Adobe','Oracle','SAP'],a:0},
+  {type:'ox',q:'「ASUS」「Acer」など、台湾メーカーはマザーボードやノートPCで存在感がある。',a:true},
+],
+trend:[
+  {type:'4',q:'「AI」は何の略か？',c:['Artificial Intelligence（人工知能）','Auto Internet','Advanced Internet','Automatic Input'],a:0},
+  {type:'ox',q:'「クラウドコンピューティング」とは、インターネット越しに計算資源やサービスを使う仕組みだ。',a:true},
+  {type:'4',q:'文章や画像などをAIが自動で作り出す技術を、総称して何と呼ぶか？',c:['生成AI（ジェネレーティブAI）','検索エンジン','圧縮アルゴリズム','表計算'],a:0},
+  {type:'ox',q:'「機械学習」とは、データからパターンを学習してAIの精度を高める手法である。',a:true},
+  {type:'4',q:'大量のテキストを学習して文章を生成するAIモデルの総称はどれか？',c:['大規模言語モデル（LLM）','HTML','HDMI','JPEG'],a:0},
+  {type:'ox',q:'Anthropic社が開発しているAIアシスタントの名前は「Claude」である。',a:true},
+  {type:'4',q:'「IoT」が指すものはどれか？',c:['モノのインターネット','インターネット決済','社内ネット','光通信回線'],a:0},
+  {type:'ox',q:'「5G」は携帯通信の世代を表し、4Gより高速・大容量の通信が可能とされる。',a:true},
+  {type:'4',q:'人間の脳の神経回路を模した、機械学習の代表的な手法はどれか？',c:['ディープラーニング（深層学習）','表計算','ファイル圧縮','フォント変換'],a:0},
+  {type:'ox',q:'「ビッグデータ」とは、従来の手法では扱いきれないほど大量・多様なデータのことだ。',a:true},
+  {type:'4',q:'専用ゴーグルなどで仮想空間を体験する技術の略称はどれか？',c:['VR（仮想現実）','USB','SSD','BIOS'],a:0},
+  {type:'ox',q:'「AR（拡張現実）」は、現実の映像にデジタル情報を重ねて表示する技術である。',a:true},
+  {type:'4',q:'ブロックチェーン技術を基盤とする、代表的なデジタル資産はどれか？',c:['暗号資産（仮想通貨）','フロッピーディスク','光ディスク','ファクシミリ'],a:0},
+  {type:'ox',q:'「サイバーセキュリティ」とは、情報やシステムを攻撃から守る取り組みのことだ。',a:true},
+  {type:'4',q:'AIの学習や大量データ処理で需要が急増し、価格が高騰したパーツはどれか？',c:['GPU','フロッピードライブ','CRTモニター','VGAケーブル'],a:0},
+  {type:'ox',q:'「量子コンピュータ」は、従来とは異なる原理で特定の計算を高速に行うと期待されている。',a:true},
+  {type:'4',q:'生成AIに対して、自然な言葉で指示を与える入力文を何と呼ぶか？',c:['プロンプト','カーネル','ピクセル','ドライバ'],a:0},
+  {type:'ox',q:'「エッジコンピューティング」とは、データを端末や近くの機器側で処理する考え方だ。',a:true},
+  {type:'4',q:'在宅などでPCとネットを使って遠隔で働く形態を何と呼ぶか？',c:['リモートワーク（テレワーク）','オーバークロック','マルチタスク','ストリーミング'],a:0},
+  {type:'ox',q:'「SaaS」とは、ソフトをインターネット越しにサービスとして利用する提供形態だ。',a:true},
+  {type:'4',q:'オンライン会議で広く使われるツールの例はどれか？',c:['Zoom','Excel','BIOS','RAM'],a:0},
+  {type:'ox',q:'「DX（デジタルトランスフォーメーション）」とは、デジタル技術で業務やビジネスを変革することだ。',a:true},
+  {type:'4',q:'次のうち、AIの応用例として当てはまらないものはどれか？',c:['顔認証','自動翻訳','音声アシスタント','電源ユニットの電圧変換'],a:3},
+  {type:'ox',q:'AIモデルが公開され、誰でも利用できる「オープンソースAI」の流れも広がっている。',a:true},
+  {type:'4',q:'指紋や顔などを使って本人確認をする技術を何と呼ぶか？',c:['生体認証（バイオメトリクス）','圧縮解凍','オーバークロック','デフラグ'],a:0},
+  {type:'ox',q:'「クラウドストレージ」を使うと、複数の端末から同じファイルにアクセスしやすい。',a:true},
+  {type:'4',q:'自動運転やロボットにも応用される、画像から物体を認識するAI技術はどれか？',c:['画像認識（コンピュータビジョン）','表計算','ファイル圧縮','文字フォント'],a:0},
+  {type:'ox',q:'「Wi-Fi 6」など、Wi-Fiの規格も世代を重ねて高速化が進んでいる。',a:true},
+],
+};
+let currentGenre=null,questions=[],qIndex=0,score=0,correctCount=0,wrongCount=0;
+let timeLeft=120,timer=null,answered=false,wrongAnswers=[],playerName='';
+let currentRankingGenre=null;
+let curChoices=[],curCorrect=0;
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function showToast(msg,d=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function buildGenreCards(){
+  const grid=document.getElementById('genres-grid');
+  grid.innerHTML=GENRES.map(g=>`<div class="genre-card" onclick="selectGenre('${g.id}')"><div class="genre-accent" style="background:${g.color};"></div><span class="genre-icon">${g.icon}</span><div class="genre-name">${g.name}</div><div class="genre-desc">${g.desc}</div><div class="genre-count">全${DB[g.id].length}問収録 ／ 10問ランダム出題</div><span class="genre-start">▶ START</span></div>`).join('');
+}
+function selectGenre(id){
+  currentGenre=GENRES.find(g=>g.id===id);
+  document.getElementById('intro-icon').textContent=currentGenre.icon;
+  document.getElementById('intro-name').textContent=currentGenre.name;
+  document.getElementById('intro-desc').textContent=currentGenre.desc;
+  if(window.TomyStamp){const saved=TomyStamp.getPlayer();const inp=document.getElementById('name-input');if(saved&&!inp.value)inp.value=saved;}
+  showScreen('screen-intro');
+}
+function startGame(){
+  playerName=document.getElementById('name-input').value.trim()||'ゲスト';
+  if(window.TomyStamp&&playerName!=='ゲスト')TomyStamp.setPlayer(playerName);
+  questions=shuffle(DB[currentGenre.id]).slice(0,10);
+  qIndex=0;score=0;correctCount=0;wrongCount=0;wrongAnswers=[];
+  showScreen('screen-quiz');showQuestion();startTimer();
+}
+function retryGame(){showScreen('screen-intro');}
+function startTimer(){clearInterval(timer);timeLeft=120;updateTimerDisplay();timer=setInterval(()=>{timeLeft--;updateTimerDisplay();if(timeLeft<=0){clearInterval(timer);endGame();}},1000);}
+function updateTimerDisplay(){const el=document.getElementById('quiz-timer');el.textContent=timeLeft;el.className='quiz-timer'+(timeLeft<=10?' danger':'');}
+function showQuestion(){
+  const q=questions[qIndex];answered=false;
+  document.getElementById('quiz-qnum').textContent=`Q${qIndex+1} / 10`;
+  document.getElementById('quiz-progress-fill').style.width=`${(qIndex/10)*100}%`;
+  document.getElementById('quiz-score').textContent=`${score} pt`;
+  document.getElementById('feedback-bar').className='feedback-bar';
+  document.getElementById('feedback-bar').textContent='';
+  document.getElementById('next-btn').className='next-btn';
+  if(q.type==='4'){
+    document.getElementById('quiz-type-badge').textContent='4択';
+    document.getElementById('quiz-type-badge').className='quiz-type-badge type-4';
+    document.getElementById('quiz-q').textContent=q.q;
+    // 4択の選択肢を毎回シャッフルして正解位置の偏りをなくす
+    const pairs=q.c.map((text,i)=>({text,correct:i===q.a}));
+    const sh=shuffle(pairs);
+    curChoices=sh.map(p=>p.text);
+    curCorrect=sh.findIndex(p=>p.correct);
+    const lb=['A','B','C','D'];
+    document.getElementById('quiz-choices').innerHTML=`<div class="choices">`+curChoices.map((c,i)=>`<button class="choice-btn" onclick="answer4(${i})"><span class="choice-label">${lb[i]}</span>${c}</button>`).join('')+`</div>`;
+  }else{
+    document.getElementById('quiz-type-badge').textContent='○×';
+    document.getElementById('quiz-type-badge').className='quiz-type-badge type-ox';
+    document.getElementById('quiz-q').textContent=q.q;
+    document.getElementById('quiz-choices').innerHTML=`<div class="ox-choices"><button class="ox-btn" onclick="answerOX(true)">⭕<span>正しい</span></button><button class="ox-btn" onclick="answerOX(false)">❌<span>誤り</span></button></div>`;
+  }
+}
+function answer4(idx){
+  if(answered)return;answered=true;
+  const btns=document.querySelectorAll('.choice-btn');btns.forEach(b=>b.disabled=true);
+  btns[curCorrect].classList.add('correct');
+  if(idx!==curCorrect)btns[idx].classList.add('wrong');
+  processAnswer(idx===curCorrect,curChoices[curCorrect],questions[qIndex].q);
+}
+function answerOX(val){if(answered)return;answered=true;const q=questions[qIndex];const btns=document.querySelectorAll('.ox-btn');btns.forEach(b=>b.disabled=true);btns[q.a?0:1].classList.add('correct');if(val!==q.a)btns[val?0:1].classList.add('wrong');processAnswer(val===q.a,q.a?'○（正しい）':'×（誤り）',q.q);}
+function processAnswer(isCorrect,correctAns,qText){
+  const fb=document.getElementById('feedback-bar');
+  if(isCorrect){score+=10;correctCount++;timeLeft=Math.min(timeLeft+5,999);fb.textContent='✅ 正解！ ＋5秒';fb.className='feedback-bar ok show';}
+  else{wrongCount++;timeLeft=Math.max(timeLeft-5,0);fb.textContent=`❌ 正解は「${correctAns}」（−5秒）`;fb.className='feedback-bar ng show';wrongAnswers.push({q:qText,a:correctAns});}
+  updateTimerDisplay();document.getElementById('next-btn').className='next-btn show';
+}
+function nextQuestion(){qIndex++;if(qIndex>=10){clearInterval(timer);endGame();}else{showQuestion();}}
+function endGame(){
+  clearInterval(timer);
+  const bonus=Math.max(timeLeft,0),total=score+bonus;
+  const medal=correctCount>=9?'🥇':correctCount>=7?'🥈':correctCount>=5?'🥉':'😅';
+  document.getElementById('result-genre').textContent=currentGenre.icon+' '+currentGenre.name;
+  document.getElementById('result-score').textContent=total;
+  document.getElementById('result-medal').textContent=medal;
+  document.getElementById('result-correct').textContent=correctCount;
+  document.getElementById('result-wrong').textContent=wrongCount;
+  document.getElementById('result-bonus').textContent='+'+bonus;
+  const ws=document.getElementById('wrong-section');
+  if(wrongAnswers.length>0){ws.innerHTML=`<div class="wrong-label">// ❌ 間違えた問題（${wrongAnswers.length}問）</div>`+wrongAnswers.map((w,i)=>`<div class="wrong-item"><div class="wrong-item-num">問${i+1}</div><div class="wrong-item-q">${w.q}</div><div class="wrong-item-ans"><span class="wrong-item-ans-label">正解</span><span class="wrong-item-ans-text">${w.a}</span></div></div>`).join('');}
+  else{ws.innerHTML='<div style="text-align:center;padding:20px;font-family:\'Share Tech Mono\',monospace;font-size:12px;color:var(--blue3);">🎉 全問正解！</div>';}
+  saveRanking(currentGenre.id,playerName,total,correctCount);
+  if(window.TomyStamp&&playerName!=='ゲスト'){TomyStamp.send('pc-quiz',currentGenre.name,correctCount).then(r=>{if(r.ok)showToast('⭐ スタンプ獲得！ランキングに反映されます');});}
+  showScreen('screen-result');
+}
+const LS_KEY='pc_quiz_ranking';
+function saveRanking(gId,name,sc,correct){const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');if(!data[gId])data[gId]=[];data[gId].push({name,score:sc,correct,date:new Date().toLocaleDateString('ja-JP')});data[gId].sort((a,b)=>b.score-a.score);data[gId]=data[gId].slice(0,20);localStorage.setItem(LS_KEY,JSON.stringify(data));}
+function showRanking(){const tabs=document.getElementById('ranking-tabs');tabs.innerHTML=GENRES.map(g=>`<button class="ranking-tab" onclick="switchRankingTab('${g.id}',this)">${g.icon} ${g.name}</button>`).join('');showScreen('screen-ranking');switchRankingTab(GENRES[0].id,tabs.querySelector('.ranking-tab'));}
+function switchRankingTab(id,btn){document.querySelectorAll('.ranking-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');currentRankingGenre=id;renderRanking(id);}
+function renderRanking(id){const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');const rows=data[id]||[];const list=document.getElementById('ranking-list');if(!rows.length){list.innerHTML='<div class="ranking-empty">// まだ記録がありません</div>';return;}list.innerHTML=rows.map((r,i)=>{const pos=i+1,pc=pos===1?'gold':pos===2?'silver':pos===3?'bronze':'';const rc=pos===1?'top1':pos===2?'top2':pos===3?'top3':'';return `<div class="ranking-row ${rc}"><span class="ranking-pos ${pc}">${pos}</span><span class="ranking-name">${r.name}</span><span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);">${r.correct}/10</span><span class="ranking-score">${r.score}</span><span class="ranking-date">${r.date}</span></div>`;}).join('');}
+function deleteRanking(){if(!currentRankingGenre)return;if(!confirm(`「${GENRES.find(g=>g.id===currentRankingGenre)?.name}」の記録を削除しますか？`))return;const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');delete data[currentRankingGenre];localStorage.setItem(LS_KEY,JSON.stringify(data));renderRanking(currentRankingGenre);}
+buildGenreCards();
+</script>
+</body>
+</html>
